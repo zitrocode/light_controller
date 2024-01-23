@@ -1,11 +1,15 @@
 import tkinter as tk
 from tkinter import ttk, colorchooser
+from light import LightController
 import json
 
 class ColorControllerApp:
     def __init__(self, root):
         self.root = root
         self.root.title("Color Controller")
+
+        self.controller = LightController(40, 38, 37)
+        self.controller.setup()
 
         # Initialize color variables
         self.red_var = tk.DoubleVar()
@@ -63,6 +67,9 @@ class ColorControllerApp:
         green = int(self.green_var.get())
         blue = int(self.blue_var.get())
 
+        # Change color leds
+        self.controller.set_color(red,blue,green)
+
         # Convert values from 0-255 to hexadecimal format and form the color
         color = "#{:02x}{:02x}{:02x}".format(red, green, blue)
 
@@ -97,6 +104,7 @@ class ColorControllerApp:
 
             # Update the color of the rectangle to black
             self.color_rectangle.config(bg="#000000")
+            self.controller.set_color(0,0,0)
         else:
             # Restore the last configuration before turning off the lights
             if self.last_config_before_off:
@@ -151,6 +159,7 @@ class ColorControllerApp:
     def on_close(self):
         # Método que se llama al cerrar la aplicación
         print("Goodbye")
+        self.controller.stop()
         self.root.destroy()
 
 if __name__ == "__main__":
