@@ -5,19 +5,22 @@ from light import LightController
 
 class Controller:
   def __init__(self):
+    self.load_settings()
+
+  def start(self):
     self.controller = LightController(40, 38, 37)
     self.controller.setup()
 
-    self.red = 255
-    self.blue = 255
-    self.green = 255
+    print('Initializing')
 
-    self.load_settings()
+  def stop(self):
+    self.controller.stop()
+    print('turning off')
 
   def set_color(self, red, blue, green):
     print(f"Color set to: Red={red}, Green={green}, Blue={blue}")
     self.save_settings(red, blue, green)
-    
+
     self.controller.set_color(red, blue, green)
 
   def turn_on(self):
@@ -52,21 +55,28 @@ class Controller:
       json.dump(settings, config, indent=1)
 
 if __name__ == "__main__":
-    parser = argparse.ArgumentParser(description="Color Controller App")
-    parser.add_argument("--set-color", nargs=3, type=int, metavar=("red", "green", "blue"),
-                        help="Set the color of the lights")
-    parser.add_argument("--on", action="store_true", help="Turn on the lights")
-    parser.add_argument("--off", action="store_true", help="Turn off the lights")
+  parser = argparse.ArgumentParser(description="Lights Controller")
+  parser.add_argument("--start", action="store_true", help="Start program")
+  parser.add_argument("--set-color", nargs=3, type=int, metavar=("red", "green", "blue"),
+                      help="Set the color of the lights")
+  parser.add_argument("--on", action="store_true", help="Turn on the lights")
+  parser.add_argument("--off", action="store_true", help="Turn off the lights")
+  parser.add_argument("--stop", action="store_true", help="App turn off")
 
-    args = parser.parse_args()
+  args = parser.parse_args()
 
-    app = Controller()
+  app = Controller()
 
-    if args.set_color:
-        app.set_color(*args.set_color)
-    elif args.on:
-        app.turn_on()
-    elif args.off:
-        app.turn_off()
-    else:
-        print("No valid command provided. Use --set-color, --on, or --off.")
+  if args.set_color:
+    app.set_color(*args.set_color)
+  elif args.on:
+    app.turn_on()
+  elif args.off:
+    app.turn_off()
+  elif args.start:
+      app.start()
+  elif args.stop:
+      app.stop()
+      
+  else:
+    print("No valid command provided. Use --start, --set-color, --on, --off, or --stop.")
