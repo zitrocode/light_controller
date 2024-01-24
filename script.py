@@ -15,9 +15,10 @@ class Controller:
     self.load_settings()
 
   def set_color(self, red, blue, green):
-    self.controller.set_color(red, blue, green)
     print(f"Color set to: Red={red}, Green={green}, Blue={blue}")
     self.save_settings(red, blue, green)
+    
+    self.controller.set_color(red, blue, green)
 
   def turn_on(self):
     self.controller.set_color(self.red, self.blue, self.green)
@@ -32,11 +33,11 @@ class Controller:
       with open('config.json', 'r') as config:
         settings = json.load(config)
       
-      self.red = settings.get('red', 0)
-      self.blue = settings.get('blue', 0)
-      self.green = settings.get('green', 0)
+      self.red = int(settings.get('red', 0))
+      self.blue = int(settings.get('blue', 0))
+      self.green = int(settings.get('green', 0))
 
-      # self.controller.set_color(self.red, self.blue, self.green)
+      self.controller.set_color(self.red, self.blue, self.green)
       print(f"Loaded configuration: Red={self.red}, Green={self.green}, Blue={self.blue}")
     except FileNotFoundError:
       print("The configuration file does not exist. Default values will be used.")
@@ -48,7 +49,7 @@ class Controller:
 
     settings = {'red': red, 'blue': blue, 'green': green}
     with open('config.json', 'w') as config:
-      json.jump(settings, config, indent=1)
+      json.dump(settings, config, indent=1)
 
 if __name__ == "__main__":
     parser = argparse.ArgumentParser(description="Color Controller App")
